@@ -1,0 +1,82 @@
+# MarchJson Milestone
+
+## P.0.1 — Initial selective JSON wrapper
+
+Status: **Implemented**
+
+### Scope
+
+- PowerShell 7 wrapper.
+- Bash/SSH wrapper.
+- Pretty JSON through jq.
+- ANSI color through jq -C.
+- curl wrapper with native bypass for file-transfer modes.
+- npm run whitelist.
+- node eval wrapper.
+- Dynamic whitelist file.
+- Short command aliases.
+- Status/help/version commands.
+- FNM-safe native command resolution on PowerShell.
+- Solar-PuTTY/cPanel compatibility through Bash.
+
+### Command surface
+
+PowerShell:
+
+~~~text
+MarchJson -h
+MarchJson h
+MarchJson s
+MarchJson l
+MarchJson a <script>
+MarchJson r <script>
+MarchJson e
+MarchJson rl
+MarchJson v
+~~~
+
+Bash:
+
+~~~text
+marchjson -h
+marchjson h
+marchjson s
+marchjson l
+marchjson a <script>
+marchjson r <script>
+marchjson e
+marchjson rl
+marchjson v
+~~~
+
+### Known limitations
+
+- Selected wrappers buffer command output until process completion.
+- Long-running npm scripts must not be whitelisted.
+- JSON multiline embedded inside mixed logs is not reconstructed across multiple lines.
+- PowerShell node stderr behavior can vary by native-command stream handling; status and bypass commands are provided for diagnosis.
+- curl auto-formatting is intended for text/JSON responses, not arbitrary binary stdout.
+
+## P.0.2 — Planned
+
+- Installer/bootstrap scripts for PowerShell and Bash.
+- Uninstall/restore helpers.
+- Automated syntax validation.
+- Fixture-based tests for:
+  - pure JSON stdout;
+  - JSON stderr;
+  - mixed log + JSON line;
+  - non-JSON output;
+  - non-zero exit codes;
+  - FNM path changes.
+- Config file for wrapper enable/disable settings.
+- Optional per-command whitelist beyond npm scripts.
+- Improved mixed-stream ordering.
+- Release/version command backed by a single version source.
+
+## Repository policy
+
+- No GitHub Actions unless there is a concrete need.
+- Keep runtime dependencies minimal.
+- Prefer explicit bypass paths over hidden global interception.
+- Preserve native behavior for interactive and streaming commands.
