@@ -67,7 +67,7 @@ Status: **Implemented**
 ### Scope
 
 - Canonical VERSION file.
-- Current version: 0.2.0.
+- Current version: 0.3.0.
 - SemVer validation.
 - Dynamic version loading in PowerShell and Bash.
 - MarchJson -v / v / version.
@@ -86,7 +86,27 @@ Status: **Implemented**
 - CHANGELOG.md must be updated for each release.
 - Version acceptance must pass before release tagging.
 
-## P.0.3 — Planned
+## P.0.3 — Public SSH distribution installer
+
+Status: **Implemented**
+
+### Scope
+
+- Root `install.sh` modeled after the march-env installer workflow.
+- Public GitHub API quick install without SSH/deploy keys.
+- Branch/tag resolution to immutable commit SHA.
+- Runtime and VERSION downloaded from the same resolved revision.
+- Bash syntax and SemVer validation before installation.
+- Pre-install and post-install runtime version verification.
+- Default runtime path `~/.local/share/marchjson`.
+- Installed `REVISION` provenance file.
+- Idempotent `~/.bashrc` marker management with backup.
+- Git checkout overwrite guard.
+- Configurable repository, ref, install directory, Bash profile, and march-env path.
+- march-env fingerprint preservation check.
+- README install/update/pin/review/distribution flow aligned with march-env.
+
+## P.0.4 — Planned
 
 - PowerShell installer/bootstrap script.
 - SSH uninstall/restore helper.
