@@ -8,6 +8,24 @@ MarchJson follows Semantic Versioning:
 - MINOR: backward-compatible features.
 - PATCH: backward-compatible fixes.
 
+## [0.3.0] - 2026-10-08
+
+### Added
+
+- Public root installer at install.sh, modeled after march-env distribution workflow.
+- Immutable ref resolution: branch or tag is resolved to a commit SHA before runtime download.
+- Atomic runtime/version replacement under ~/.local/share/marchjson.
+- Automatic ~/.bashrc integration with idempotent MarchJson marker block.
+- Installed REVISION file for provenance.
+- march-env fingerprint guard during SSH installation.
+- Custom MARCHJSON_REPO, MARCHJSON_REF, MARCHJSON_INSTALL_DIR, MARCHJSON_BASHRC, and MARCH_ENV_PATH overrides.
+
+### Changed
+
+- SSH installation no longer requires cloning the repository.
+- README installation/update/pinning/isolation flow now follows the same operational pattern as march-env.
+- Installer validates Bash syntax, SemVer, downloaded runtime version, installed runtime version, and march-env preservation before reporting PASS.
+
 ## [0.2.0] - 2026-10-08
 
 ### Added
