@@ -8,6 +8,15 @@ MarchJson follows Semantic Versioning:
 - MINOR: backward-compatible features.
 - PATCH: backward-compatible fixes.
 
+## [0.3.2] - 2026-10-08
+
+### Fixed
+
+- Installer file downloads now use the GitHub Contents API instead of raw.githubusercontent.com.
+- Network operations use connect/max-time limits plus retries so a blocked or stalled endpoint cannot hang indefinitely.
+- Installer now prints download progress stages so stalls are diagnosable.
+- Fixed the legacy-checkout backup collision suffix.
+
 ## [0.3.1] - 2026-10-08
 
 ### Fixed
