@@ -33,8 +33,9 @@ winget install --id jqlang.jq -e
 
 ### Bash / Solar-PuTTY / SSH
 
-- Bash.
+- Bash 4+.
 - jq.
+- curl atau wget.
 
 Untuk cPanel tanpa root:
 
@@ -79,28 +80,127 @@ $env:MARCHJSON_NPM_WHITELIST = "$HOME\.config\marchjson\npm-whitelist.txt"
 
 ## Instalasi Bash / Solar-PuTTY
 
-Clone repository ke direktori khusus MarchJson:
+Repository ini bersifat public. Instalasi tidak membutuhkan GitHub SSH key atau deploy key.
+
+### Quick install
 
 ~~~bash
-mkdir -p "$HOME/.local/share"
-git clone https://github.com/MarchTechnology/MarchJson.git "$HOME/.local/share/marchjson"
+curl -fsSL \
+  -H 'Accept: application/vnd.github.raw+json' \
+  -H 'User-Agent: marchjson-installer' \
+  'https://api.github.com/repos/MarchTechnology/MarchJson/contents/install.sh?ref=main' |
+  bash
 ~~~
 
-Jalankan installer SSH:
+Installer akan:
 
-~~~bash
-bash "$HOME/.local/share/marchjson/scripts/install-ssh.sh"
-~~~
+- me-resolve branch/tag seperti `main` ke commit SHA immutable melalui GitHub API,
+- mengunduh `bash/marchjson.sh` dan `VERSION` dari commit SHA yang sama,
+- memvalidasi Bash syntax dan SemVer sebelum instalasi,
+- memvalidasi versi runtime sebelum dan sesudah instalasi,
+- memasang runtime ke `~/.local/share/marchjson`,
+- menyimpan commit SHA terpasang pada `~/.local/share/marchjson/REVISION`,
+- menambahkan blok MarchJson ke `~/.bashrc` secara idempotent,
+- membuat backup `~/.bashrc` sebelum perubahan,
+- menolak install directory yang merupakan Git checkout,
+- memverifikasi bahwa `~/.local/bin/march-env` tidak berubah.
 
-Installer menambahkan blok source MarchJson secara idempotent ke ~/.bashrc, membuat backup ~/.bashrc terlebih dahulu, lalu memvalidasi syntax Bash sebelum perubahan diterapkan.
-
-Reload dan cek:
+Reload dan validasi:
 
 ~~~bash
 source ~/.bashrc
+
+marchjson --version
+marchjson --help
 marchjson status
 ~~~
 
+Output versi saat ini:
+
+~~~text
+marchjson 0.3.0
+~~~
+
+### Review installer sebelum menjalankan
+
+~~~bash
+curl -fsSL \
+  https://raw.githubusercontent.com/MarchTechnology/MarchJson/main/install.sh \
+  -o /tmp/marchjson-install.sh
+
+less /tmp/marchjson-install.sh
+bash /tmp/marchjson-install.sh
+~~~
+
+### Update
+
+Jalankan kembali installer yang sama:
+
+~~~bash
+curl -fsSL \
+  -H 'Accept: application/vnd.github.raw+json' \
+  -H 'User-Agent: marchjson-installer' \
+  'https://api.github.com/repos/MarchTechnology/MarchJson/contents/install.sh?ref=main' |
+  bash
+~~~
+
+### Pin ke commit atau tag
+
+Installer mendukung `MARCHJSON_REF`. Branch/tag di-resolve ke commit SHA terlebih dahulu; SHA 40 karakter digunakan langsung.
+
+~~~bash
+curl -fsSL \
+  -H 'Accept: application/vnd.github.raw+json' \
+  -H 'User-Agent: marchjson-installer' \
+  'https://api.github.com/repos/MarchTechnology/MarchJson/contents/install.sh?ref=main' |
+  MARCHJSON_REF=<commit-or-tag> bash
+~~~
+
+Contoh:
+
+~~~bash
+curl -fsSL \
+  -H 'Accept: application/vnd.github.raw+json' \
+  -H 'User-Agent: marchjson-installer' \
+  'https://api.github.com/repos/MarchTechnology/MarchJson/contents/install.sh?ref=main' |
+  MARCHJSON_REF=v0.3.0 bash
+~~~
+
+### Custom install directory
+
+Default:
+
+~~~text
+MARCHJSON_REPO=MarchTechnology/MarchJson
+MARCHJSON_REF=main
+MARCHJSON_INSTALL_DIR=$HOME/.local/share/marchjson
+MARCHJSON_BASHRC=$HOME/.bashrc
+MARCH_ENV_PATH=$HOME/.local/bin/march-env
+~~~
+
+Custom install directory:
+
+~~~bash
+curl -fsSL \
+  -H 'Accept: application/vnd.github.raw+json' \
+  -H 'User-Agent: marchjson-installer' \
+  'https://api.github.com/repos/MarchTechnology/MarchJson/contents/install.sh?ref=main' |
+  MARCHJSON_INSTALL_DIR="$HOME/.local/share/marchjson-runtime" bash
+~~~
+
+### Instalasi via Git
+
+Untuk development atau review source:
+
+~~~bash
+git clone https://github.com/MarchTechnology/MarchJson.git
+cd MarchJson
+
+bash scripts/install-ssh.sh
+source ~/.bashrc
+~~~
+
+Untuk penggunaan normal server, quick installer `install.sh` lebih direkomendasikan.
 ### Coexistence dengan march-env
 
 MarchJson dan march-env menggunakan path yang berbeda:
@@ -243,13 +343,13 @@ marchjson status
 Untuk menaikkan versi dari Bash:
 
 ~~~bash
-bash scripts/set-version.sh 0.2.1
+bash scripts/set-version.sh 0.3.1
 ~~~
 
 Untuk menaikkan versi dari PowerShell:
 
 ~~~powershell
-pwsh scripts/set-version.ps1 0.2.1
+pwsh scripts/set-version.ps1 0.3.1
 ~~~
 
 Setelah mengubah versi:
@@ -381,11 +481,22 @@ MarchJson/
 │   ├── set-version.ps1
 │   └── set-version.sh
 ├── CHANGELOG.md
+├── install.sh
 ├── MILESTONE.md
 ├── README.md
 └── VERSION
 ~~~
 
+## Distribusi
+
+Repository dan installer tersedia secara public melalui GitHub. Quick installer mengunci satu proses instalasi ke commit SHA tertentu sebelum mengunduh runtime dan `VERSION`, sehingga branch yang berubah selama proses tidak mencampur revision berbeda.
+
+Tidak ada credential MarchTech yang diperlukan untuk mengunduh atau memasang MarchJson.
+
+## License
+
+Repository saat ini belum menetapkan lisensi open-source eksplisit. Akses public ke source code tidak otomatis memberikan hak redistribusi atau modifikasi di luar ketentuan yang ditetapkan pemilik repository.
+
 ## Status
 
-Versi canonical selalu dibaca dari VERSION. Gunakan `MarchJson version` atau `marchjson version` untuk melihat versi aktif. Lihat CHANGELOG.md untuk riwayat rilis dan MILESTONE.md untuk status pengembangan.
+Versi saat ini: **0.3.0**. Source of truth tetap file `VERSION`. Gunakan `MarchJson version` atau `marchjson version` untuk melihat versi aktif. Lihat `CHANGELOG.md` untuk riwayat rilis dan `MILESTONE.md` untuk status pengembangan.
