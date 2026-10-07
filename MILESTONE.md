@@ -60,7 +60,33 @@ marchjson v
 - PowerShell node stderr behavior can vary by native-command stream handling; status and bypass commands are provided for diagnosis.
 - curl auto-formatting is intended for text/JSON responses, not arbitrary binary stdout.
 
-## P.0.2 — Planned
+## P.0.2 — Semantic versioning foundation
+
+Status: **Implemented**
+
+### Scope
+
+- Canonical VERSION file.
+- Current version: 0.2.0.
+- SemVer validation.
+- Dynamic version loading in PowerShell and Bash.
+- MarchJson -v / --version / v / version.
+- marchjson -v / --version / v / version.
+- Version file path included in status output.
+- CHANGELOG.md.
+- Bash and PowerShell version setter scripts.
+- Bash acceptance for version source and command output.
+- Runtime fallback to 0.0.0-dev when VERSION is missing or invalid.
+
+### Release invariant
+
+- VERSION is the only canonical release version source.
+- Runtime files must not carry an independent hardcoded release version.
+- Releases use Git tags in the form vMAJOR.MINOR.PATCH.
+- CHANGELOG.md must be updated for each release.
+- Version acceptance must pass before release tagging.
+
+## P.0.3 — Planned
 
 - PowerShell installer/bootstrap script.
 - SSH uninstall/restore helper.
@@ -76,7 +102,6 @@ marchjson v
 - Config file for wrapper enable/disable settings.
 - Optional per-command whitelist beyond npm scripts.
 - Improved mixed-stream ordering.
-- Release/version command backed by a single version source.
 
 ## SSH coexistence invariant
 
