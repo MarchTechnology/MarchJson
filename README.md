@@ -76,21 +76,61 @@ $env:MARCHJSON_NPM_WHITELIST = "$HOME\.config\marchjson\npm-whitelist.txt"
 
 ## Instalasi Bash / Solar-PuTTY
 
+Clone repository ke direktori khusus MarchJson:
+
 ~~~bash
 mkdir -p "$HOME/.local/share"
 git clone https://github.com/MarchTechnology/MarchJson.git "$HOME/.local/share/marchjson"
 ~~~
 
-Tambahkan ke ~/.bashrc:
+Jalankan installer SSH:
 
 ~~~bash
-source "$HOME/.local/share/marchjson/bash/marchjson.sh"
+bash "$HOME/.local/share/marchjson/scripts/install-ssh.sh"
 ~~~
 
-Validasi:
+Installer menambahkan blok source MarchJson secara idempotent ke ~/.bashrc, membuat backup ~/.bashrc terlebih dahulu, lalu memvalidasi syntax Bash sebelum perubahan diterapkan.
+
+Reload dan cek:
 
 ~~~bash
-bash -n ~/.bashrc && source ~/.bashrc
+source ~/.bashrc
+marchjson status
+~~~
+
+### Coexistence dengan march-env
+
+MarchJson dan march-env menggunakan path yang berbeda:
+
+~~~text
+MarchJson:
+  ~/.local/share/marchjson/
+
+march-env:
+  ~/.local/bin/march-env
+~~~
+
+Installer SSH MarchJson **tidak menginstal, mengganti, memindahkan, chmod, atau menghapus file apa pun di ~/.local/bin**. Secara khusus, ~/.local/bin/march-env dianggap sebagai protected sibling tool.
+
+Jika march-env sudah ada, installer mengambil fingerprint sebelum dan sesudah instalasi. Jika fingerprint berubah selama proses, instalasi dianggap gagal dan backup ~/.bashrc dikembalikan.
+
+Installer hanya mengelola blok berikut di ~/.bashrc:
+
+~~~text
+# >>> MarchJson >>>
+source <path>/bash/marchjson.sh
+# <<< MarchJson <<<
+~~~
+
+Konfigurasi lain di ~/.bashrc, termasuk konfigurasi march-env, harus tetap dipertahankan.
+
+Instalasi jq untuk shared hosting juga hanya menulis file ~/.local/bin/jq. Perintah mkdir -p ~/.local/bin aman untuk direktori yang sudah ada dan tidak menghapus march-env.
+
+Untuk memverifikasi coexistence setelah instalasi:
+
+~~~bash
+command -v march-env
+command -v jq
 marchjson status
 ~~~
 
@@ -256,6 +296,10 @@ MarchJson/
 │   └── marchjson.sh
 ├── powershell/
 │   └── MarchJson.ps1
+├── scripts/
+│   ├── acceptance/
+│   │   └── install-ssh-coexistence.sh
+│   └── install-ssh.sh
 ├── MILESTONE.md
 └── README.md
 ~~~
