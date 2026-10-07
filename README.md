@@ -105,7 +105,9 @@ Installer akan:
 - menyimpan commit SHA terpasang pada `~/.local/share/marchjson/REVISION`,
 - menambahkan blok MarchJson ke `~/.bashrc` secara idempotent,
 - membuat backup `~/.bashrc` sebelum perubahan,
-- menolak install directory yang merupakan Git checkout,
+- jika install directory berisi legacy checkout `MarchTechnology/MarchJson`, memindahkannya ke backup timestamped sebelum instalasi,
+- menolak Git checkout lain yang tidak dikenali agar tidak ada repository asing yang dipindahkan otomatis,
+- memulihkan legacy checkout jika instalasi gagal setelah migrasi,
 - memverifikasi bahwa `~/.local/bin/march-env` tidak berubah.
 
 Reload dan validasi:
@@ -121,7 +123,7 @@ marchjson status
 Output versi saat ini:
 
 ~~~text
-marchjson 0.3.0
+marchjson 0.3.1
 ~~~
 
 ### Review installer sebelum menjalankan
@@ -349,13 +351,13 @@ marchjson status
 Untuk menaikkan versi dari Bash:
 
 ~~~bash
-bash scripts/set-version.sh 0.3.1
+bash scripts/set-version.sh 0.3.2
 ~~~
 
 Untuk menaikkan versi dari PowerShell:
 
 ~~~powershell
-pwsh scripts/set-version.ps1 0.3.1
+pwsh scripts/set-version.ps1 0.3.2
 ~~~
 
 Setelah mengubah versi:
@@ -483,6 +485,7 @@ MarchJson/
 │   ├── acceptance/
 │   │   ├── install-public-isolation.sh
 │   │   ├── install-ssh-coexistence.sh
+│   │   ├── legacy-checkout-migration.sh
 │   │   └── versioning.sh
 │   ├── install-ssh.sh
 │   ├── set-version.ps1
@@ -506,4 +509,4 @@ Repository saat ini belum menetapkan lisensi open-source eksplisit. Akses public
 
 ## Status
 
-Versi saat ini: **0.3.0**. Source of truth tetap file `VERSION`. Gunakan `MarchJson version` atau `marchjson version` untuk melihat versi aktif. Lihat `CHANGELOG.md` untuk riwayat rilis dan `MILESTONE.md` untuk status pengembangan.
+Versi saat ini: **0.3.1**. Source of truth tetap file `VERSION`. Gunakan `MarchJson version` atau `marchjson version` untuk melihat versi aktif. Lihat `CHANGELOG.md` untuk riwayat rilis dan `MILESTONE.md` untuk status pengembangan.
