@@ -70,7 +70,7 @@ Status: **Implemented**
 - Current version: 0.2.0.
 - SemVer validation.
 - Dynamic version loading in PowerShell and Bash.
-- MarchJson -v / --version / v / version.
+- MarchJson -v / v / version.
 - marchjson -v / --version / v / version.
 - Version file path included in status output.
 - CHANGELOG.md.
