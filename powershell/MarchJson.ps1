@@ -16,7 +16,15 @@ function Get-MarchJsonVersion {
     if (Test-Path -LiteralPath $script:MarchJsonVersionFile) {
         $version = (Get-Content -LiteralPath $script:MarchJsonVersionFile -Raw).Trim()
 
-        if ($version -match '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?
+        $semVerPattern = '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?\z'
+
+        if ($version -match $semVerPattern) {
+            return $version
+        }
+    }
+
+    return '0.0.0-dev'
+}
 if ([string]::IsNullOrWhiteSpace($env:MARCHJSON_NPM_WHITELIST)) {
     $script:MarchJsonNpmWhitelistFile = "$HOME\.config\powershell\json-npm-whitelist.txt"
 }
