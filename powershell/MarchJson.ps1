@@ -292,7 +292,7 @@ Usage:
   MarchJson r | remove <npm-script>
   MarchJson e | edit
   MarchJson rl | reload
-  MarchJson -v | --version
+  MarchJson -v
   MarchJson v | version
 
 Wrappers:
@@ -326,7 +326,7 @@ Whitelist:
             return
         }
 
-        { $_ -in @('v', 'version', '--version') } {
+        { $_ -in @('v', 'version') } {
             Write-Host "MarchJson $(Get-MarchJsonVersion)"
             return
         }
