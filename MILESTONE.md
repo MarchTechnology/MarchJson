@@ -67,7 +67,7 @@ Status: **Implemented**
 ### Scope
 
 - Canonical VERSION file.
-- Current version: 0.3.0.
+- Current version: 0.3.1.
 - SemVer validation.
 - Dynamic version loading in PowerShell and Bash.
 - MarchJson -v / v / version.
@@ -101,10 +101,13 @@ Status: **Implemented**
 - Default runtime path `~/.local/share/marchjson`.
 - Installed `REVISION` provenance file.
 - Idempotent `~/.bashrc` marker management with backup.
-- Git checkout overwrite guard.
+- Recognized legacy MarchJson Git checkout migration with timestamped backup.
+- Rollback to legacy checkout on migration-time install failure.
+- Unrecognized Git checkout overwrite guard.
 - Configurable repository, ref, install directory, Bash profile, and march-env path.
 - march-env fingerprint preservation check.
 - Public installer isolation acceptance covering install and reinstall.
+- Legacy checkout migration acceptance.
 - README install/update/pin/review/distribution flow aligned with march-env.
 
 ## P.0.4 — Planned
