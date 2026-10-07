@@ -35,6 +35,7 @@ MarchJson follows Semantic Versioning:
 - Version status sourced dynamically from VERSION.
 - SSH installer with explicit march-env coexistence protection.
 - SSH coexistence acceptance coverage.
+- Public installer isolation acceptance covering reinstall idempotence plus march-env content/mode preservation.
 
 ### Changed
 
