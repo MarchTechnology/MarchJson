@@ -18,6 +18,9 @@ TMP_VERSION="$TMP_ROOT/VERSION"
 TMP_BASHRC_CONTENT="$TMP_ROOT/bashrc.content"
 TMP_BASHRC_DEST="$TMP_ROOT/bashrc.dest"
 
+LEGACY_CHECKOUT_BACKUP=''
+LEGACY_MIGRATED=0
+
 cleanup() {
   rm -rf "$TMP_ROOT"
 }
@@ -27,9 +30,57 @@ trap 'exit 129' HUP
 trap 'exit 130' INT
 trap 'exit 143' TERM
 
+rollback_legacy_checkout() {
+  if [[ "$LEGACY_MIGRATED" == '1' ]] && [[ -n "$LEGACY_CHECKOUT_BACKUP" ]]; then
+    rm -rf -- "$INSTALL_DIR"
+
+    if [[ -d "$LEGACY_CHECKOUT_BACKUP" ]]; then
+      mv -- "$LEGACY_CHECKOUT_BACKUP" "$INSTALL_DIR"
+      printf 'Rollback: restored legacy Git checkout to %s\n' "$INSTALL_DIR" >&2
+    fi
+  fi
+}
+
 fail() {
   printf 'ERROR: %s\n' "$1" >&2
+  rollback_legacy_checkout
   exit 1
+}
+
+is_marchjson_checkout() {
+  local origin=''
+
+  command -v git >/dev/null 2>&1 || return 1
+
+  origin="$(git -C "$INSTALL_DIR" remote get-url origin 2>/dev/null || true)"
+
+  case "$origin" in
+    https://github.com/MarchTechnology/MarchJson|    https://github.com/MarchTechnology/MarchJson.git|    git@github.com:MarchTechnology/MarchJson.git|    ssh://git@github.com/MarchTechnology/MarchJson.git)
+      return 0
+      ;;
+  esac
+
+  return 1
+}
+
+migrate_legacy_checkout() {
+  [[ -d "$INSTALL_DIR/.git" ]] || return 0
+
+  if ! is_marchjson_checkout; then
+    fail "MARCHJSON_INSTALL_DIR is a Git checkout that is not recognized as MarchTechnology/MarchJson: $INSTALL_DIR"
+  fi
+
+  LEGACY_CHECKOUT_BACKUP="$INSTALL_DIR.git-backup-$(date +%Y%m%d-%H%M%S)"
+
+  if [[ -e "$LEGACY_CHECKOUT_BACKUP" ]]; then
+    LEGACY_CHECKOUT_BACKUP="$LEGACY_CHECKOUT_BACKUP.$"
+  fi
+
+  mv -- "$INSTALL_DIR" "$LEGACY_CHECKOUT_BACKUP"
+  LEGACY_MIGRATED=1
+
+  printf 'Legacy Git checkout detected.\n'
+  printf 'Preserved checkout: %s\n' "$LEGACY_CHECKOUT_BACKUP"
 }
 
 fingerprint_file() {
@@ -72,10 +123,6 @@ fi
 
 if ! command -v jq >/dev/null 2>&1; then
   fail 'jq is required but was not found in PATH. Install jq first, then rerun the installer.'
-fi
-
-if [[ -d "$INSTALL_DIR/.git" ]]; then
-  fail "MARCHJSON_INSTALL_DIR points to a Git checkout: $INSTALL_DIR. Use a different install directory or move the checkout first."
 fi
 
 mkdir -p "$(dirname "$TMP_RUNTIME")"
@@ -143,6 +190,8 @@ DOWNLOADED_VERSION="$(
   fail 'downloaded runtime version does not match VERSION.'
 
 march_env_before="$(fingerprint_file "$MARCH_ENV_PATH")"
+
+migrate_legacy_checkout
 
 mkdir -p "$INSTALL_DIR/bash"
 
@@ -235,6 +284,11 @@ if [[ "$march_env_before" == 'ABSENT' ]]; then
   printf 'march-env: not present before install; no march-env file was created or modified.\n'
 else
   printf 'march-env: preserved unchanged at %s\n' "$MARCH_ENV_PATH"
+fi
+
+if [[ "$LEGACY_MIGRATED" == '1' ]]; then
+  printf 'Legacy checkout backup: %s\n' "$LEGACY_CHECKOUT_BACKUP"
+  LEGACY_MIGRATED=0
 fi
 
 printf 'Validation: PASS\n'
