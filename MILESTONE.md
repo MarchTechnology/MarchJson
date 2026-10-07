@@ -67,7 +67,7 @@ Status: **Implemented**
 ### Scope
 
 - Canonical VERSION file.
-- Current version: 0.3.1.
+- Current version: 0.3.2.
 - SemVer validation.
 - Dynamic version loading in PowerShell and Bash.
 - MarchJson -v / v / version.
@@ -95,7 +95,8 @@ Status: **Implemented**
 - Root `install.sh` modeled after the march-env installer workflow.
 - Public GitHub API quick install without SSH/deploy keys.
 - Branch/tag resolution to immutable commit SHA.
-- Runtime and VERSION downloaded from the same resolved revision.
+- Runtime and VERSION downloaded from the same resolved revision through the GitHub Contents API.
+- Network timeout/retry protection prevents indefinite installer stalls.
 - Bash syntax and SemVer validation before installation.
 - Pre-install and post-install runtime version verification.
 - Default runtime path `~/.local/share/marchjson`.
