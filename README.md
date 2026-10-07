@@ -171,7 +171,6 @@ MarchJson edit
 MarchJson rl
 MarchJson reload
 MarchJson -v
-MarchJson --version
 MarchJson v
 MarchJson version
 ~~~
@@ -230,7 +229,7 @@ PowerShell dan Bash membaca file VERSION secara dinamis. Jika file hilang atau n
 Versi aktif:
 
 ~~~powershell
-MarchJson --version
+MarchJson -v
 MarchJson v
 MarchJson status
 ~~~
@@ -389,4 +388,4 @@ MarchJson/
 
 ## Status
 
-Versi saat ini: **0.2.0**. Nilai canonical tetap dibaca dari VERSION. Lihat CHANGELOG.md untuk riwayat rilis dan MILESTONE.md untuk status pengembangan.
+Versi canonical selalu dibaca dari VERSION. Gunakan `MarchJson version` atau `marchjson version` untuk melihat versi aktif. Lihat CHANGELOG.md untuk riwayat rilis dan MILESTONE.md untuk status pengembangan.
