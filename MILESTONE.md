@@ -104,6 +104,7 @@ Status: **Implemented**
 - Git checkout overwrite guard.
 - Configurable repository, ref, install directory, Bash profile, and march-env path.
 - march-env fingerprint preservation check.
+- Public installer isolation acceptance covering install and reinstall.
 - README install/update/pin/review/distribution flow aligned with march-env.
 
 ## P.0.4 — Planned
