@@ -123,7 +123,7 @@ marchjson status
 Output versi saat ini:
 
 ~~~text
-marchjson 0.3.1
+marchjson 0.3.2
 ~~~
 
 ### Review installer sebelum menjalankan
@@ -351,13 +351,13 @@ marchjson status
 Untuk menaikkan versi dari Bash:
 
 ~~~bash
-bash scripts/set-version.sh 0.3.2
+bash scripts/set-version.sh 0.3.3
 ~~~
 
 Untuk menaikkan versi dari PowerShell:
 
 ~~~powershell
-pwsh scripts/set-version.ps1 0.3.2
+pwsh scripts/set-version.ps1 0.3.3
 ~~~
 
 Setelah mengubah versi:
@@ -509,4 +509,4 @@ Repository saat ini belum menetapkan lisensi open-source eksplisit. Akses public
 
 ## Status
 
-Versi saat ini: **0.3.1**. Source of truth tetap file `VERSION`. Gunakan `MarchJson version` atau `marchjson version` untuk melihat versi aktif. Lihat `CHANGELOG.md` untuk riwayat rilis dan `MILESTONE.md` untuk status pengembangan.
+Versi saat ini: **0.3.2**. Source of truth tetap file `VERSION`. Gunakan `MarchJson version` atau `marchjson version` untuk melihat versi aktif. Lihat `CHANGELOG.md` untuk riwayat rilis dan `MILESTONE.md` untuk status pengembangan.
