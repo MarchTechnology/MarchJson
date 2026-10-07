@@ -26,6 +26,23 @@ grep -Fq "MarchJsonVersionFile = Join-Path" "$ROOT/powershell/MarchJson.ps1" ||
 grep -Fq 'CHANGELOG.md' "$ROOT/README.md" ||
     fail "README does not document CHANGELOG"
 
+[ -f "$ROOT/CHANGELOG.md" ] ||
+    fail "CHANGELOG.md missing"
+
+[ -f "$ROOT/scripts/set-version.sh" ] ||
+    fail "Bash version setter missing"
+
+[ -f "$ROOT/scripts/set-version.ps1" ] ||
+    fail "PowerShell version setter missing"
+
+if grep -Fq "$version" "$ROOT/bash/marchjson.sh"; then
+    fail "Bash runtime contains independent hardcoded release version"
+fi
+
+if grep -Fq "$version" "$ROOT/powershell/MarchJson.ps1"; then
+    fail "PowerShell runtime contains independent hardcoded release version"
+fi
+
 # shellcheck disable=SC1090
 source "$ROOT/bash/marchjson.sh"
 
