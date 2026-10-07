@@ -17,10 +17,13 @@ MarchJson bersifat selektif agar command interaktif, watcher, server, Git, SSH, 
 - Semantic versioning dengan satu sumber versi di file VERSION.
 - Command version pada PowerShell dan Bash.
 - CHANGELOG.md untuk riwayat rilis.
+- Quick installer SSH public dengan immutable commit resolution.
+- Integrasi `~/.bashrc` idempotent dengan backup.
+- Proteksi coexistence dengan `march-env`.
 - Bypass ke executable native.
 - Resolver PowerShell kompatibel dengan FNM dan beberapa fnm_multishells.
 
-## Requirement
+## Requirements
 
 ### PowerShell
 
@@ -156,15 +159,17 @@ curl -fsSL \
   MARCHJSON_REF=<commit-or-tag> bash
 ~~~
 
-Contoh:
+Contoh pin ke commit SHA:
 
 ~~~bash
 curl -fsSL \
   -H 'Accept: application/vnd.github.raw+json' \
   -H 'User-Agent: marchjson-installer' \
   'https://api.github.com/repos/MarchTechnology/MarchJson/contents/install.sh?ref=main' |
-  MARCHJSON_REF=v0.3.0 bash
+  MARCHJSON_REF=<40-character-commit-sha> bash
 ~~~
+
+Jika release tag seperti `v0.3.0` sudah dibuat, tag tersebut juga dapat digunakan sebagai `MARCHJSON_REF`.
 
 ### Custom install directory
 
@@ -201,6 +206,7 @@ source ~/.bashrc
 ~~~
 
 Untuk penggunaan normal server, quick installer `install.sh` lebih direkomendasikan.
+
 ### Coexistence dengan march-env
 
 MarchJson dan march-env menggunakan path yang berbeda:
@@ -475,6 +481,7 @@ MarchJson/
 │   └── MarchJson.ps1
 ├── scripts/
 │   ├── acceptance/
+│   │   ├── install-public-isolation.sh
 │   │   ├── install-ssh-coexistence.sh
 │   │   └── versioning.sh
 │   ├── install-ssh.sh
