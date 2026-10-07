@@ -104,14 +104,28 @@ fingerprint_file() {
   cksum "$path" | awk '{print $1 ":" $2}'
 }
 
-download_to() {
-  local url="$1"
+download_api_file() {
+  local path="$1"
   local dest="$2"
+  local url="$API_BASE/contents/$path?ref=$RESOLVED_SHA"
 
   if command -v curl >/dev/null 2>&1; then
-    curl -fsSL "$url" -o "$dest"
+    curl -fsSL \
+      --connect-timeout 10 \
+      --max-time 30 \
+      --retry 2 \
+      --retry-delay 1 \
+      -H 'Accept: application/vnd.github.raw+json' \
+      -H 'User-Agent: marchjson-installer' \
+      "$url" \
+      -o "$dest"
   elif command -v wget >/dev/null 2>&1; then
-    wget -qO "$dest" "$url"
+    wget -qO "$dest" \
+      --timeout=30 \
+      --tries=3 \
+      --header='Accept: application/vnd.github.raw+json' \
+      --header='User-Agent: marchjson-installer' \
+      "$url"
   else
     fail 'curl or wget is required to download MarchJson.'
   fi
@@ -134,12 +148,18 @@ else
 
   if command -v curl >/dev/null 2>&1; then
     curl -fsSL \
+      --connect-timeout 10 \
+      --max-time 30 \
+      --retry 2 \
+      --retry-delay 1 \
       -H 'Accept: application/vnd.github+json' \
       -H 'User-Agent: marchjson-installer' \
       "$COMMIT_API_URL" \
       -o "$TMP_META"
   elif command -v wget >/dev/null 2>&1; then
     wget -qO "$TMP_META" \
+      --timeout=30 \
+      --tries=3 \
       --header='Accept: application/vnd.github+json' \
       --header='User-Agent: marchjson-installer' \
       "$COMMIT_API_URL"
@@ -157,13 +177,16 @@ else
   )" || fail 'unable to resolve requested ref to a commit SHA.'
 fi
 
-RAW_BASE="https://raw.githubusercontent.com/${REPO}/${RESOLVED_SHA}"
-
 printf 'Installing MarchJson from %s@%s\n' "$REPO" "$REF"
 printf 'Resolved commit: %s\n' "$RESOLVED_SHA"
 
-download_to "$RAW_BASE/bash/marchjson.sh" "$TMP_RUNTIME"
-download_to "$RAW_BASE/VERSION" "$TMP_VERSION"
+printf 'Downloading runtime...\n'
+download_api_file 'bash/marchjson.sh' "$TMP_RUNTIME"
+
+printf 'Downloading version metadata...\n'
+download_api_file 'VERSION' "$TMP_VERSION"
+
+printf 'Download validation...\n'
 
 [[ -s "$TMP_RUNTIME" ]] ||
   fail 'downloaded MarchJson Bash runtime is empty.'
