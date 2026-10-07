@@ -18,6 +18,9 @@ Status: **Implemented**
 - Status/help/version commands.
 - FNM-safe native command resolution on PowerShell.
 - Solar-PuTTY/cPanel compatibility through Bash.
+- SSH installer with idempotent ~/.bashrc integration.
+- Explicit coexistence guard for ~/.local/bin/march-env.
+- SSH install acceptance test proving march-env fingerprint preservation and idempotent marker handling.
 
 ### Command surface
 
@@ -59,8 +62,9 @@ marchjson v
 
 ## P.0.2 — Planned
 
-- Installer/bootstrap scripts for PowerShell and Bash.
-- Uninstall/restore helpers.
+- PowerShell installer/bootstrap script.
+- SSH uninstall/restore helper.
+- PowerShell uninstall/restore helper.
 - Automated syntax validation.
 - Fixture-based tests for:
   - pure JSON stdout;
@@ -73,6 +77,15 @@ marchjson v
 - Optional per-command whitelist beyond npm scripts.
 - Improved mixed-stream ordering.
 - Release/version command backed by a single version source.
+
+## SSH coexistence invariant
+
+- MarchJson runtime lives under ~/.local/share/marchjson.
+- march-env remains under ~/.local/bin/march-env.
+- MarchJson installer must never replace, chmod, move, or delete march-env.
+- MarchJson installer must never clear or recreate ~/.local/bin.
+- Changes to ~/.bashrc must be scoped to the MarchJson marker block and must preserve unrelated configuration.
+- Acceptance must verify march-env content is byte-for-byte unchanged across repeated installs.
 
 ## Repository policy
 
