@@ -1,8 +1,30 @@
-# MarchJson 0.1.0
+# MarchJson
 # JSON-aware selective wrappers for Bash/SSH.
 # Source this file from ~/.bashrc.
 
-MARCHJSON_VERSION="0.1.0"
+MARCHJSON_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
+MARCHJSON_VERSION_FILE="$MARCHJSON_ROOT/VERSION"
+
+__marchjson_version() {
+    local version=""
+
+    if [ -n "${MARCHJSON_VERSION_OVERRIDE:-}" ]; then
+        printf '%s\n' "$MARCHJSON_VERSION_OVERRIDE"
+        return 0
+    fi
+
+    if [ -r "$MARCHJSON_VERSION_FILE" ]; then
+        IFS= read -r version < "$MARCHJSON_VERSION_FILE" || true
+        version="${version//[[:space:]]/}"
+
+        if [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            printf '%s\n' "$version"
+            return 0
+        fi
+    fi
+
+    printf '%s\n' '0.0.0-dev'
+}
 
 if [ -z "${MARCHJSON_NPM_WHITELIST:-}" ]; then
     MARCHJSON_NPM_WHITELIST="$HOME/.config/march/json-npm-whitelist.txt"
@@ -138,7 +160,7 @@ marchjson() {
 
     __marchjson_help() {
         cat <<EOF
-marchjson $MARCHJSON_VERSION - JSON-aware wrapper manager
+marchjson $(__marchjson_version) - JSON-aware wrapper manager
 
 Usage:
   marchjson -h
@@ -149,6 +171,7 @@ Usage:
   marchjson r | remove <npm-script>
   marchjson e | edit
   marchjson rl | reload
+  marchjson -v | --version
   marchjson v | version
 
 Wrappers:
@@ -171,13 +194,14 @@ EOF
             __marchjson_help
             ;;
 
-        v|version)
-            echo "marchjson $MARCHJSON_VERSION"
+        -v|--version|v|version)
+            echo "marchjson $(__marchjson_version)"
             ;;
 
         s|status)
             echo "MarchJson:"
-            echo "  Version: $MARCHJSON_VERSION"
+            echo "  Version: $(__marchjson_version)"
+            echo "  Version file: $MARCHJSON_VERSION_FILE"
             echo
             echo "Whitelist file:"
             echo "  $MARCHJSON_NPM_WHITELIST"
