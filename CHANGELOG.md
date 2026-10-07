@@ -8,6 +8,15 @@ MarchJson follows Semantic Versioning:
 - MINOR: backward-compatible features.
 - PATCH: backward-compatible fixes.
 
+## [0.3.1] - 2026-10-08
+
+### Fixed
+
+- Quick installer now recognizes a legacy MarchJson Git checkout at the default install path.
+- Recognized legacy checkouts are moved to a timestamped backup instead of causing installation to fail.
+- Installer rollback restores the legacy checkout automatically if installation fails after migration.
+- Unrecognized Git checkouts remain protected and are never moved automatically.
+
 ## [0.3.0] - 2026-10-08
 
 ### Added
