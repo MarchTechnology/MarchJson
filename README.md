@@ -14,6 +14,9 @@ MarchJson bersifat selektif agar command interaktif, watcher, server, Git, SSH, 
 - Whitelist npm di file terpisah.
 - Manager MarchJson pada PowerShell dan marchjson pada Bash.
 - Alias singkat: h, s, l, a, r, e, rl.
+- Semantic versioning dengan satu sumber versi di file VERSION.
+- Command version pada PowerShell dan Bash.
+- CHANGELOG.md untuk riwayat rilis.
 - Bypass ke executable native.
 - Resolver PowerShell kompatibel dengan FNM dan beberapa fnm_multishells.
 
@@ -167,6 +170,10 @@ MarchJson e
 MarchJson edit
 MarchJson rl
 MarchJson reload
+MarchJson -v
+MarchJson --version
+MarchJson v
+MarchJson version
 ~~~
 
 Bash:
@@ -188,7 +195,78 @@ marchjson e
 marchjson edit
 marchjson rl
 marchjson reload
+marchjson -v
+marchjson --version
+marchjson v
+marchjson version
 ~~~
+
+## Versioning
+
+MarchJson mengikuti Semantic Versioning (SemVer):
+
+~~~text
+MAJOR.MINOR.PATCH
+~~~
+
+Aturan:
+
+- MAJOR untuk perubahan yang tidak backward-compatible.
+- MINOR untuk fitur baru yang backward-compatible.
+- PATCH untuk bug fix yang backward-compatible.
+
+Sumber versi tunggal repository adalah:
+
+~~~text
+VERSION
+~~~
+
+PowerShell dan Bash membaca file VERSION secara dinamis. Jika file hilang atau nilainya bukan SemVer valid, runtime menggunakan fallback:
+
+~~~text
+0.0.0-dev
+~~~
+
+Versi aktif:
+
+~~~powershell
+MarchJson --version
+MarchJson v
+MarchJson status
+~~~
+
+~~~bash
+marchjson --version
+marchjson v
+marchjson status
+~~~
+
+Untuk menaikkan versi dari Bash:
+
+~~~bash
+bash scripts/set-version.sh 0.2.1
+~~~
+
+Untuk menaikkan versi dari PowerShell:
+
+~~~powershell
+pwsh scripts/set-version.ps1 0.2.1
+~~~
+
+Setelah mengubah versi:
+
+1. perbarui CHANGELOG.md;
+2. jalankan acceptance versioning;
+3. commit perubahan;
+4. buat Git tag dengan format vMAJOR.MINOR.PATCH saat merilis.
+
+Acceptance:
+
+~~~bash
+bash scripts/acceptance/versioning.sh
+~~~
+
+Riwayat perubahan tersedia di [CHANGELOG.md](CHANGELOG.md).
 
 ## Contoh whitelist
 
@@ -298,12 +376,17 @@ MarchJson/
 │   └── MarchJson.ps1
 ├── scripts/
 │   ├── acceptance/
-│   │   └── install-ssh-coexistence.sh
-│   └── install-ssh.sh
+│   │   ├── install-ssh-coexistence.sh
+│   │   └── versioning.sh
+│   ├── install-ssh.sh
+│   ├── set-version.ps1
+│   └── set-version.sh
+├── CHANGELOG.md
 ├── MILESTONE.md
-└── README.md
+├── README.md
+└── VERSION
 ~~~
 
 ## Status
 
-Versi awal: 0.1.0. Lihat MILESTONE.md untuk status dan rencana berikutnya.
+Versi saat ini: **0.2.0**. Nilai canonical tetap dibaca dari VERSION. Lihat CHANGELOG.md untuk riwayat rilis dan MILESTONE.md untuk status pengembangan.
